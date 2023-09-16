@@ -23,17 +23,14 @@ namespace DrivingGame.Console.Helpers
                 }
                 else if (x >= (GetLeftRoadLimit()) && x <= (GetRightRoadLimit()))
                 {
-                    firstLine += "o";
+                    firstLine += " ";
                 }
                 else
                 {
                     firstLine += "*";
                 }
             }
-            //System.Console.Write(firstLine);
-            //System.Console.WriteLine("");
             _config.CurrentRoadState[_config.CurrentRoadState.Length - 1] = firstLine;
-            //_gameBoard[] = { { }, { } }
         }
 
         public void GenerateNextGameLine(int verticalSection)
@@ -45,15 +42,13 @@ namespace DrivingGame.Console.Helpers
             {
                 if (x >= GetLeftRoadLimit() && x <= GetRightRoadLimit())
                 {
-                    newGameLine += "o";
+                    newGameLine += " ";
                 }
                 else
                 {
                     newGameLine += "*";
                 }
             }
-            //System.Console.Write(newGameLine);
-            //System.Console.WriteLine("");
             _config.CurrentRoadState[verticalSection] = newGameLine;
         }
         
@@ -69,21 +64,39 @@ namespace DrivingGame.Console.Helpers
 
         private void ShiftCurrentCenterPoint()
         {
-            if (_config.CurrentCenterPoint == 1 || _config.CurrentCenterPoint == Constants.WIDTH - 1)
-            {
-                return;
-            }
-
             Random rnd = new Random();
             int chanceLeftOrRight = rnd.Next(1, 6);
-            if (chanceLeftOrRight == 1)
+
+            if (_config.CurrentCenterPoint == ((Constants.ROADWIDTH - 1) / 2)) //Left side
             {
-                _config.CurrentCenterPoint -= 1;
-            }
-            else if (chanceLeftOrRight == 5)
+                if (chanceLeftOrRight >= 3)
+                {
+                    _config.CurrentCenterPoint += 1;
+                }
+            } 
+            else if (_config.CurrentCenterPoint == Constants.WIDTH - ((Constants.ROADWIDTH - 1) / 2)) //Right side
             {
-                _config.CurrentCenterPoint += 1;
+                if (chanceLeftOrRight <= 3)
+                {
+                    _config.CurrentCenterPoint -= 1;
+                }
             }
+            else
+            {
+                if (chanceLeftOrRight == 1)
+                {
+                    _config.CurrentCenterPoint -= 1;
+                }
+                else if (chanceLeftOrRight == 5)
+                {
+                    _config.CurrentCenterPoint += 1;
+                }
+            }
+        }
+
+        private void ImplementChanceToMoveRoad()
+        {
+
         }
 
         private int GetLeftRoadLimit()

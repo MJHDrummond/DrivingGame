@@ -16,13 +16,12 @@ namespace DrivingGame.Console
         {
             _config = config;
 
+
             bool continueGame = true;
             while (continueGame)
             {
 
-                //Move car to next line in same position
-                //Create new road section
-                //Print to console
+                Task.Run(() => continueGame = UpdateCarPosition());
                 continueGame = MoveCarToNextRoadSection();
                 roadGenerator.GenerateNextGameLineDuringPlay();
 
@@ -43,12 +42,31 @@ namespace DrivingGame.Console
             System.Console.WriteLine("Game Over!");
         }
 
+        private bool UpdateCarPosition()
+        {
+            while (true)
+            {
+                var ch = System.Console.ReadKey(false).Key;
+                switch (ch)
+                {
+                    case ConsoleKey.Escape:
+                        return false;
+                    case ConsoleKey.LeftArrow:
+                        _config.CurrentCarPosition -= 1;
+                        break;
+                    case ConsoleKey.RightArrow:
+                        _config.CurrentCarPosition += 1;
+                        break;
+                }
+            }
+        }
+
         private bool MoveCarToNextRoadSection()
         {
             string nextRoadSection = _config.CurrentRoadState[_config.CurrentRoadState.Length - 2];
 
-            _config.CurrentLeftRoadLimit = nextRoadSection.IndexOf("o") - 1;
-            _config.CurrentRightRoadLimit = nextRoadSection.LastIndexOf("o") + 1;
+            _config.CurrentLeftRoadLimit = nextRoadSection.IndexOf(" ") - 1;
+            _config.CurrentRightRoadLimit = nextRoadSection.LastIndexOf(" ") + 1;
 
             if (_config.CurrentCarPosition <= _config.CurrentLeftRoadLimit || _config.CurrentCarPosition >= _config.CurrentRightRoadLimit)
             {
