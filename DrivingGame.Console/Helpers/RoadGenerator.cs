@@ -3,32 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DrivingGame.Console;
 
-namespace DrivingGame.Console
+namespace DrivingGame.Console.Helpers
 {
-    public class IntialiseRoad
+    public class RoadGenerator
     {
         ConfigurationItem _config = new ConfigurationItem();
-        Constants Constants = new Constants();  
-
-        public Task GenerateStartingRoad(ConfigurationItem config)
+        Constants Constants = new Constants();
+        public void GenerateFirstGameLine(ConfigurationItem config)
         {
             _config = config;
-            _config.CurrentRoadState = new string[Constants.LENGTH];
-            _config.CurrentCenterPoint = (Constants.WIDTH - 1) / 2;
 
-            GenerateFirstGameLine();
-            for (int y = Constants.LENGTH - 2; y >= 0; y--)
-            {
-                GenerateNextGameLine(y);
-            }
-            Array.ForEach(_config.CurrentRoadState, System.Console.WriteLine);
-            return Task.CompletedTask;
-        }
-
-        private void GenerateFirstGameLine()
-        {
             string firstLine = string.Empty;
             for (int x = 0; x < Constants.WIDTH; x++)
             {
@@ -51,14 +36,14 @@ namespace DrivingGame.Console
             //_gameBoard[] = { { }, { } }
         }
 
-        private void GenerateNextGameLine(int verticalSection)
+        public void GenerateNextGameLine(int verticalSection)
         {
             ShiftCurrentCenterPoint();
 
             string newGameLine = string.Empty;
             for (int x = 0; x < Constants.WIDTH; x++)
             {
-                if (x >= (GetLeftRoadLimit()) && x <= (GetRightRoadLimit()))
+                if (x >= GetLeftRoadLimit() && x <= GetRightRoadLimit())
                 {
                     newGameLine += "o";
                 }
@@ -71,6 +56,17 @@ namespace DrivingGame.Console
             //System.Console.WriteLine("");
             _config.CurrentRoadState[verticalSection] = newGameLine;
         }
+        
+        public void GenerateNextGameLineDuringPlay()
+        {
+            for (int x = _config.CurrentRoadState.Length - 1; x >= 1; x--)
+            {
+                _config.CurrentRoadState[x] = _config.CurrentRoadState[x - 1];
+            }
+            ShiftCurrentCenterPoint();
+            GenerateNextGameLine(0);
+        }
+
         private void ShiftCurrentCenterPoint()
         {
             if (_config.CurrentCenterPoint == 1 || _config.CurrentCenterPoint == Constants.WIDTH - 1)
