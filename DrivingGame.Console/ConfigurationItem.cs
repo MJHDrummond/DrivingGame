@@ -13,6 +13,6 @@ namespace DrivingGame.Console
         public string[]? CurrentRoadState { get; set; }
         public int CurrentLeftRoadLimit { get; set; }
         public int CurrentRightRoadLimit { get; set; }
-        public int CurrentRoadRefreshRate = 1000; //Refresh rate in ms
+        public int CurrentRoadRefreshRate = 50; //Refresh rate in ms
     }
 }
